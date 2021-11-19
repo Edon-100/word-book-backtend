@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../common/entity/base.entity';
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {

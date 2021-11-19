@@ -8,7 +8,7 @@ import { ResponseService } from '../shared/response/response.service';
 
 @Module({
   imports: [ResponseService, TypeOrmModule.forFeature([UserEntity])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, UserService],
   controllers: [UserController],
   providers: [UserService],
 })

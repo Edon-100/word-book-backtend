@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as compression from 'compression';
+import * as helmet from 'helmet';
 import * as RateLimit from 'express-rate-limit';
 import { HttpExceptionFilter } from './filters/all-exceptions.filter';
 
@@ -11,9 +12,10 @@ async function bootstrap() {
   app.use(
     RateLimit({
       windowMs: 1 * 60 * 1000, // 1minutes
-      max: 20, // limit each IP to 100 requests per windowMs
+      max: 30, // limit each IP to 100 requests per windowMs
     }),
   );
+  app.use(helmet());
   app.useGlobalPipes(
     new ValidationPipe({
       // disableErrorMessages: true,

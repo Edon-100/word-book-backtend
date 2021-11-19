@@ -64,12 +64,15 @@ export class UserService {
     }
     const userEntity = await queryBuilder.getOne();
     return userEntity;
-    // const queryBuilder = await this.usersRespsitory.createQueryBuilder('users');
-    // queryBuilder.where('users.phone = :phone', { phone });
-    // const userEntity = await queryBuilder.getOne();
-    // if (!userEntity) {
-    //   throw new HttpException('cant find user', 999);
-    // }
-    // return userEntity;
+
+    // console.log(condition);
+    // const user = this.usersRespsitory.findOne(condition as object);
+    // return user;
+  }
+
+  async findValidateUser(condition: any) {
+    return this.usersRespsitory.findOne(condition, {
+      select: ['id', 'account', 'password'],
+    });
   }
 }

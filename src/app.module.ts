@@ -10,12 +10,18 @@ import { UserEntity } from './module/user/user.entity';
 import { NestLogsModule } from 'nest-logs';
 import { ApiLoggingInterceptor } from './interceptors/apiLogger.interceptor';
 import { SharedModule } from './module/shared/shared.module';
+import { AuthModule } from './module/auth/auth.module';
+import { WordEntity } from './module/word/entities/word.entity';
 
+console.log(process.env.JWT_SECRET);
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     NestLogsModule,
     WordModule,
-    ConfigModule.forRoot(),
+    UserModule,
+    SharedModule,
+    AuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -23,12 +29,10 @@ import { SharedModule } from './module/shared/shared.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [UserEntity],
+      entities: [UserEntity, WordEntity],
       // logging: ['query'],
       synchronize: true, // TODO: shouldn't be used in production
     }),
-    UserModule,
-    SharedModule,
   ],
   exports: [AppService],
   controllers: [AppController],
