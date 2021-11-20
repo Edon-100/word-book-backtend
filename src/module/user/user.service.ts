@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { ResponseService } from '../shared/response/response.service';
 import { RegisterDto } from './user.dto';
 import { UserEntity } from './user.entity';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {

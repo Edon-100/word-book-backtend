@@ -9,19 +9,30 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ResponseService } from '../shared/response/response.service';
 
 @Controller('word')
+@UseGuards(JwtAuthGuard)
 export class WordController {
-  constructor(private readonly wordService: WordService) {}
+  constructor(
+    private readonly wordService: WordService,
+    private readonly responseService: ResponseService,
+  ) {}
 
   @Post('/add')
-  create(@Body() createWordDto: CreateWordDto) {
-    console.log(createWordDto);
-    return this.wordService.create(createWordDto);
+  async create(@Req() req, @Body('text') text: string) {
+    console.log(req.user, text);
+    const word = await this.wordService.searchText(text);
+    const saveWord = Object.assign({}, word, { userId: req.user.id });
+    return this.wordService.create(saveWord);
+    // return this.wordService.create(createWordDto);
   }
 
   @Get()

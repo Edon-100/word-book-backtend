@@ -5,6 +5,7 @@ import * as compression from 'compression';
 import * as helmet from 'helmet';
 import * as RateLimit from 'express-rate-limit';
 import { HttpExceptionFilter } from './filters/all-exceptions.filter';
+// import * as csurf from 'csurf';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,7 @@ async function bootstrap() {
     }),
   );
   app.use(helmet());
+  // app.use(csurf());
   app.useGlobalPipes(
     new ValidationPipe({
       // disableErrorMessages: true,
