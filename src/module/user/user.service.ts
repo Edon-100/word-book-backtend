@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ResponseService } from '../shared/response/response.service';
 import { RegisterDto } from './user.dto';
 import { UserEntity } from './user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,25 +14,25 @@ export class UserService {
     private responseService: ResponseService,
   ) {}
   async register(userRegisterDto: RegisterDto) {
-    const { email, account, phone } = userRegisterDto;
+    const { email, username, phone, password } = userRegisterDto;
     const queryConditionList = [];
-    if (account) queryConditionList.push('users.account = :account');
+    if (username) queryConditionList.push('users.username = :username');
     if (email) queryConditionList.push('users.email = :email');
     if (phone) queryConditionList.push('users.phone = :phone');
     const queryCondition = queryConditionList.join(' OR ');
 
     const exsitUser = await this.usersRespsitory
       .createQueryBuilder('users')
-      .andWhere(queryCondition, { account, email, phone })
+      .andWhere(queryCondition, { username, email, phone })
       .getOne();
 
     if (exsitUser) {
       const {
-        account: userAccount,
+        username: userAccount,
         phone: userPhonoe,
         email: userEmail,
       } = exsitUser;
-      if (account === userAccount) {
+      if (username === userAccount) {
         return this.responseService.sendError('创建失败，已经存在该账号');
       } else if (email === userEmail) {
         return this.responseService.sendError('创建失败，已经该邮件');
@@ -72,7 +73,7 @@ export class UserService {
 
   async findValidateUser(condition: any) {
     return this.usersRespsitory.findOne(condition, {
-      select: ['id', 'account', 'password'],
+      select: ['id', 'username', 'password'],
     });
   }
 }

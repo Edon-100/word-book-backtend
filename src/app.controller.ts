@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { NestLogger } from 'nest-logs';
 import { AppService } from './app.service';
+import { LoginDto } from './common/dto/login.dto';
 import { AuthService } from './module/auth/auth.service';
 import { JwtAuthGuard } from './module/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from './module/auth/guards/local-auth.guard';
@@ -29,16 +30,14 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Body() req) {
-    return this.authService.login(req);
+  async login(@Req() req) {
+    return this.authService.login(req.body);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   getProfile(@Req() req) {
-    console.log('req.user', req.user);
     return req.user;
   }
 }

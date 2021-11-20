@@ -15,7 +15,7 @@ export class UserDto {
   password: string;
 
   @IsString()
-  account: string;
+  username: string;
 
   @IsOptional()
   @IsMobilePhone()
@@ -36,7 +36,7 @@ export class RegisterDto {
   password: string;
 
   @IsString()
-  account: string;
+  username: string;
 
   @IsOptional()
   @IsMobilePhone()
