@@ -17,10 +17,12 @@ export class AuthService {
     const user = await this.userService.findValidateUser({
       username: userData.username,
     });
-    const isMatch = await bcrypt.compare(userData.password, user.password);
-    if (user && isMatch) {
-      const { password, ...result } = user;
-      return result;
+    if (user) {
+      const isMatch = await bcrypt.compare(userData.password, user.password);
+      if (isMatch) {
+        const { password, ...result } = user;
+        return result;
+      }
     }
     return null;
   }

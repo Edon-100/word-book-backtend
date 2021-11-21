@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateWordDto } from './dto/create-word.dto';
-import { UpdateWordDto } from './dto/update-word.dto';
+import { UpdateWordDto, CreateWordDto } from './dto/index.dto';
 import axios from 'axios';
 import { REQUEST_BASE_URL } from 'src/constants';
 import * as dayjs from 'dayjs';
@@ -29,8 +28,16 @@ export class WordService {
     return !!existWord;
   }
 
-  async findAll(userId: number) {
-    return await this.wordRepository.find({ userId });
+  async getWordList(userId: number, page: number, limit = 10) {
+    const skip = (page - 1) * limit;
+    const [result, total] = await this.wordRepository.findAndCount({
+      where: { userId },
+      order: { createdAt: 'ASC' },
+      skip: skip,
+      take: limit,
+    });
+    console.log(result, total);
+    return { list: result, total };
   }
 
   async findOne(userId: number, text: string) {
@@ -55,7 +62,6 @@ export class WordService {
     } = await axios.get(
       `${REQUEST_BASE_URL}?text=${text}&appkey=${process.env.YD_APP_KEY}&key=${process.env.YD_KEY}`,
     );
-    console.log(content);
     const word = {
       text,
       isWord: content?.isWord,

@@ -18,7 +18,6 @@ export class WordEntity extends BaseEntity {
     transformer: {
       to: (val) => val,
       from: (val) => {
-        console.log(val, val.split('/n'));
         return val.split('/n');
       },
     },

@@ -36,16 +36,16 @@ export class ApiLoggingInterceptor implements NestInterceptor {
         );
       }),
       map((data) => {
-        const message = {
-          url,
-          method,
-          user,
-          body,
-          params,
-          query,
-          data,
-        };
-        Logger.log(message, '中间件记录日志');
+        // const message = {
+        //   url,
+        //   method,
+        //   user,
+        //   body,
+        //   params,
+        //   query,
+        //   data,
+        // };
+        // Logger.log(message, '中间件记录日志');
         return data;
       }),
     );

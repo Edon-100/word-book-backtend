@@ -13,7 +13,6 @@ import { SharedModule } from './module/shared/shared.module';
 import { AuthModule } from './module/auth/auth.module';
 import { WordEntity } from './module/word/entities/word.entity';
 
-console.log(process.env.JWT_SECRET);
 @Module({
   imports: [
     ConfigModule.forRoot(),

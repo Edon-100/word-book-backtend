@@ -37,7 +37,7 @@ export class HttpExceptionFilter
     const msg = validateMsg || resultMessage;
     const errorResponse = {
       status,
-      message: msg,
+      message: process.env.NODE_ENV === 'production' ? '发生了点错误' : msg,
       code: resultCode, // 自定义code
       params: resultParams,
       path: request.url, // 错误的url地址
@@ -48,7 +48,7 @@ export class HttpExceptionFilter
     Logger.error(
       `【Logger:${formatDate(Date.now())}】${request.method} ${
         request.url
-      } msg:${msg}`,
+      } msg:${msg} stack:${exception.stack}`,
     );
     // 设置返回的状态码、请求头、发送错误信息
     response.status(status);

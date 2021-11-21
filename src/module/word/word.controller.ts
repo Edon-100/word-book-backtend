@@ -14,10 +14,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { WordService } from './word.service';
-import { CreateWordDto } from './dto/create-word.dto';
-import { UpdateWordDto } from './dto/update-word.dto';
+import { CreateWordDto, UpdateWordDto, WordListDto } from './dto/index.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ResponseService } from '../shared/response/response.service';
+import { UserEntity } from '../user/user.entity';
+import { User } from 'src/decorators/user.decorator';
 
 @Controller('word')
 @UseGuards(JwtAuthGuard)
@@ -27,9 +28,16 @@ export class WordController {
     private readonly responseService: ResponseService,
   ) {}
 
+  /**
+   * @description 添加单词
+   */
   @Post('/add')
-  async create(@Req() req, @Body('text') text: string) {
-    const { id } = req.user;
+  async create(
+    @Req() req,
+    @Body('text') text: string,
+    @User() user: UserEntity,
+  ) {
+    const { id } = user;
     const isExist = await this.wordService.isExist(id, text);
     if (isExist) {
       return this.responseService.sendResponse({ msg: '单词已存在' });
@@ -43,15 +51,21 @@ export class WordController {
   }
 
   @Get('/list')
-  async findAll(@Req() req) {
-    const { id } = req.user;
-    const list = await this.wordService.findAll(id);
+  async getWordList(
+    @Req() req,
+    @Query() query: WordListDto,
+    @User() user: UserEntity,
+  ) {
+    const { id } = user;
+    const { page, limit } = query;
+    const list = await this.wordService.getWordList(id, page, limit);
     return this.responseService.sendResponse({ data: list });
   }
 
   @Get('/')
-  async findOne(@Req() req, @Query('text') text: string) {
-    const { id } = req.user;
+  async findOne(@Req() req, @Query() query, @User() user: UserEntity) {
+    const { id } = user;
+    const { text } = query;
     const word = await this.wordService.findOne(id, text);
     return this.responseService.sendResponse({ data: word });
   }

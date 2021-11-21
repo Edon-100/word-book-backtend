@@ -11,9 +11,11 @@ import {
 import { NestLogger } from 'nest-logs';
 import { AppService } from './app.service';
 import { LoginDto } from './common/dto/login.dto';
+import { User } from './decorators/user.decorator';
 import { AuthService } from './module/auth/auth.service';
 import { JwtAuthGuard } from './module/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from './module/auth/guards/local-auth.guard';
+import { UserEntity } from './module/user/user.entity';
 import { UserService } from './module/user/user.service';
 
 @NestLogger()
@@ -37,7 +39,7 @@ export class AppController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
-  getProfile(@Req() req) {
-    return req.user;
+  getProfile(@Req() req, @User() user: UserEntity) {
+    return user;
   }
 }
