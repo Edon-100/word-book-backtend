@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -6,8 +7,9 @@ export class WordEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
-  userId: string;
+  @Exclude()
+  @Column({ nullable: false, select: false })
+  userId: number;
 
   @Column()
   text: string;

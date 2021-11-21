@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -28,31 +29,40 @@ export class WordController {
 
   @Post('/add')
   async create(@Req() req, @Body('text') text: string) {
-    console.log(req.user, text);
+    const { id } = req.user;
+    const isExist = await this.wordService.isExist(id, text);
+    if (isExist) {
+      return this.responseService.sendResponse({ msg: '单词已存在' });
+    }
     const word = await this.wordService.searchText(text);
-    const saveWord = Object.assign({}, word, { userId: req.user.id });
-    return this.wordService.create(saveWord);
-    // return this.wordService.create(createWordDto);
+    const saveWord = await this.wordService.create(id, word);
+    delete saveWord.createdAt;
+    delete saveWord.updatedAt;
+    delete saveWord.userId;
+    return this.responseService.sendResponse({ data: saveWord });
   }
 
-  @Get()
-  findAll() {
-    return this.wordService.findAll();
+  @Get('/list')
+  async findAll(@Req() req) {
+    const { id } = req.user;
+    const list = await this.wordService.findAll(id);
+    return this.responseService.sendResponse({ data: list });
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: string) {
-    console.log(typeof id);
-    return this.wordService.findOne(+id);
+  @Get('/')
+  async findOne(@Req() req, @Query('text') text: string) {
+    const { id } = req.user;
+    const word = await this.wordService.findOne(id, text);
+    return this.responseService.sendResponse({ data: word });
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWordDto: UpdateWordDto) {
-    return this.wordService.update(+id, updateWordDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateWordDto: UpdateWordDto) {
+  //   return this.wordService.update(+id, updateWordDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wordService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.wordService.remove(+id);
+  // }
 }

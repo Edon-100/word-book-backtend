@@ -15,18 +15,30 @@ export class WordService {
     @InjectRepository(WordEntity)
     private wordRepository: Repository<WordEntity>,
   ) {}
-  async create(word: IWord) {
-    const saveWord = this.wordRepository.create(word);
+  async create(userId: number, word: IWord) {
+    const wordWithId = Object.assign({ userId }, word);
+    const saveWord = this.wordRepository.create(wordWithId);
     return this.wordRepository.save(saveWord);
-    // const word = await this.searchText(text);
   }
 
-  findAll() {
-    return `This action returns all word`;
+  async isExist(userId: number, text: string): Promise<boolean> {
+    const existWord = await this.wordRepository.findOne({
+      userId,
+      text,
+    });
+    return !!existWord;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} word`;
+  async findAll(userId: number) {
+    return await this.wordRepository.find({ userId });
+  }
+
+  async findOne(userId: number, text: string) {
+    const existWord = await this.wordRepository.findOne({
+      userId,
+      text,
+    });
+    return existWord;
   }
 
   update(id: number, updateWordDto: UpdateWordDto) {
@@ -58,35 +70,3 @@ export class WordService {
     return word;
   }
 }
-
-/* 
-{
-  returnPhrase: [ 'promise' ],
-  query: 'Promise',
-  errorCode: '0',
-  l: 'en2zh-CHS',
-  tSpeakUrl: 'http://openapi.youdao.com/ttsapi?q=%E6%89%BF%E8%AF%BA&langType=zh-CHS&sign=BF24A266630083C1603ACE1D37C01EAC&salt=1608193967937&voice=4&format=mp3&appKey=298b254664acdfd2&ttsVoiceStrict=false',
-  web: [
-    { value: [Array], key: 'Promise' },
-    { value: [Array], key: 'promise n' },
-    { value: [Array], key: 'promise yourself' }
-  ],
-  requestId: '3f036849-4da8-4b71-a635-d140f9baf580',
-  translation: [ '承诺' ],
-  dict: { url: 'yddict://m.youdao.com/dict?le=eng&q=Promise' },
-  webdict: { url: 'http://m.youdao.com/dict?le=eng&q=Promise' },
-  basic: {
-    exam_type: [ '初中', '高中', 'CET4', 'CET6', '考研', 'IELTS' ],
-    'us-phonetic': 'ˈprɑːmɪs',
-    phonetic: 'ˈprɒmɪs',
-    'uk-phonetic': 'ˈprɒmɪs',
-    wfs: [ [Object], [Object], [Object], [Object], [Object] ],
-    'uk-speech': 'http://openapi.youdao.com/ttsapi?q=Promise&langType=en&sign=AB570D6FB82E508793DB6D88D4671890&salt=1608193967937&voice=5&format=mp3&appKey=298b254664acdfd2&ttsVoiceStrict=false',
-    explains: [ 'n. 许诺，允诺；希望', 'vt. 允诺，许诺；给人以……的指望或希望', 'vi. 许诺；有指望，有前途' ],
-    'us-speech': 'http://openapi.youdao.com/ttsapi?q=Promise&langType=en&sign=AB570D6FB82E508793DB6D88D4671890&salt=1608193967937&voice=6&format=mp3&appKey=298b254664acdfd2&ttsVoiceStrict=false'
-  },
-  isWord: true,
-  speakUrl: 'http://openapi.youdao.com/ttsapi?q=Promise&langType=en&sign=AB570D6FB82E508793DB6D88D4671890&salt=1608193967937&voice=4&format=mp3&appKey=298b254664acdfd2&ttsVoiceStrict=false'
-}
-
-*/
