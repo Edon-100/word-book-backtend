@@ -47,6 +47,7 @@ export class WordController {
     delete saveWord.createdAt;
     delete saveWord.updatedAt;
     delete saveWord.userId;
+    (saveWord as any).explains = saveWord.explains.split('/n');
     return this.responseService.sendResponse({ data: saveWord });
   }
 

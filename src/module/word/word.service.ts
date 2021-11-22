@@ -36,7 +36,6 @@ export class WordService {
       skip: skip,
       take: limit,
     });
-    console.log(result, total);
     return { list: result, total };
   }
 
